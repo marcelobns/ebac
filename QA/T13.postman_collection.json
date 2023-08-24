@@ -1,0 +1,295 @@
+{
+	"info": {
+		"_postman_id": "a665b4b3-3b0a-42d3-b7e9-2e47ed47b1a5",
+		"name": "Tarefa13",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Realizar Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Email e/ou senha inválidos\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Email e/ou senha inválidos\");",
+							"});",
+							"pm.test(\"Login realizado com sucesso\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Login realizado com sucesso\");",
+							"});",
+							"",
+							"if(pm.response.status == \"OK\"){",
+							"    pm.collectionVariables.set(\"token\", pm.response.json().authorization);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localhost}}/login",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Listar Usuários",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"if(pm.response.status == \"OK\"){",
+							"    pm.collectionVariables.set(\"id\", pm.response.json().usuarios[0]._id);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{localhost}}/usuarios",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"usuarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cadastrar Usuário",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Cadastro realizado com sucesso\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Cadastro realizado com sucesso\");",
+							"});",
+							"",
+							"pm.test(\"Este email já está sendo usado\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Este email já está sendo usado\");",
+							"});",
+							"",
+							"if(pm.response.status == \"OK\"){",
+							"    pm.collectionVariables.set(\"id\", pm.response.json()._id);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nome\": \"Marcelo EBC\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\",\n  \"administrador\": \"true\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localhost}}/usuarios",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"usuarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buscar Usuário por ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{localhost}}/usuarios/{{id}}",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"usuarios",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Excluir Usuário",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Registro excluído com sucesso\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Registro excluído com sucesso\");",
+							"});",
+							"",
+							"pm.test(\"Nenhum registro excluído\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Nenhum registro excluído\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{localhost}}/usuarios/{{id}}",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"usuarios",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Editar Usuário",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Registro alterado com sucesso\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Registro alterado com sucesso\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nome\": \"editado_{{nome}}\",\n  \"email\": \"{{email}}\",\n  \"password\": \"editado_{{password}}\",\n  \"administrador\": \"true\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localhost}}/usuarios/{{id}}",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"usuarios",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "localhost",
+			"value": "http://127.0.0.1:3000",
+			"type": "default"
+		},
+		{
+			"key": "token",
+			"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hcmNlbG9AdGVzdGUuY29tLmJyIiwicGFzc3dvcmQiOiJ0ZXN0ZSIsImlhdCI6MTY5MjkwNjIyOSwiZXhwIjoxNjkyOTA2ODI5fQ.gtYz1l-iKBv3gDRWX-xRB_-gekJLu7MZpAxG9xkNMzw",
+			"type": "default"
+		},
+		{
+			"key": "nome",
+			"value": "Marcelo",
+			"type": "default"
+		},
+		{
+			"key": "email",
+			"value": "marcelo@teste.com.br",
+			"type": "default"
+		},
+		{
+			"key": "password",
+			"value": "teste",
+			"type": "default"
+		},
+		{
+			"key": "id",
+			"value": "RpqP34JKX0L9zbtR",
+			"type": "default"
+		}
+	]
+}
